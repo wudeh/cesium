@@ -236,20 +236,20 @@
 
         
         // 添加一个模型
-        const shanghaiEntity = viewer.entities.add({
-          id: 'shanghaiCity',
-          type: "gltf_model",
-          position: Cesium.Cartesian3.fromDegrees((fujianshiJson).features[0].properties.center[0], (fujianshiJson).features[0].properties.center[1], 0),
-          // props: this.props,
-          // orientation: this.calculateOrientation(),
-          model: {
-            uri: './shanghaiCity/scene.gltf',
-            // minimumPixelSize: 500,
-            // maximumScale: 1,
-            scale: 100,
-            show: true
-          }
-        })
+        // const shanghaiEntity = viewer.entities.add({
+        //   id: 'shanghaiCity',
+        //   type: "gltf_model",
+        //   position: Cesium.Cartesian3.fromDegrees((fujianshiJson).features[0].properties.center[0], (fujianshiJson).features[0].properties.center[1], 0),
+        //   // props: this.props,
+        //   // orientation: this.calculateOrientation(),
+        //   model: {
+        //     uri: './shanghaiCity/scene.gltf',
+        //     // minimumPixelSize: 500,
+        //     // maximumScale: 1,
+        //     scale: 100,
+        //     show: true
+        //   }
+        // })
         // viewer.flyTo(shanghaiEntity)
 
         // 添加台风效果
