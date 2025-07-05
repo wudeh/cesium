@@ -23,8 +23,10 @@
     import SnowEffect from './utils/Snow';
     import { initTaiFeng } from "./utils/TaiFeng/TaiFeng";
     import { addPoint } from "./utils/PointSpread"
-
-
+    import { FlyLine } from "./utils/FlyLine"
+    import analyzingVisibilityFn from "./utils/AreaAnalyze"
+    import { draw } from './utils/Draw'
+    import Radar from "./utils/Radar.js";
     let viewer;
  
     Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1Nzg3MjY4ZC05MzBmLTRjY2QtOTAwYy0zZDUxMzUxY2MwOTUiLCJpZCI6MzE0MDE4LCJpYXQiOjE3NTA0MDgwMDF9.Lob16HZhNHzDGntvVfOzqeDL_WH7Nf4aNd1S0tNMBIA';
@@ -78,10 +80,9 @@
         viewer.imageryLayers.addImageryProvider(gaodeImageryProvider); 
 
         viewer.terrainProvider = await Cesium.createWorldTerrainAsync({
-          requestVertexNormals: true, // 请求法线，用于地形光照
+          requestVertexNormals: true, // 请求法线加载地形数据，用于地形光照
           requestWaterMask: true, // 动态海洋水效果
         });
-
 
 
         // 添加线
@@ -142,64 +143,64 @@
 
         
 
-        let handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);//处理用户输入事件
-        handler.setInputAction(function (event) {       // 设置左键点击事件
-          let pick = viewer.scene.pick(event.position); // 获取 pick 拾取对象
-          console.log(pick)
-          if (Cesium.defined(pick) && pick.id.indexOf("mark") > -1) {                   // 判断是否获取到了 pick 
-            console.log(pick);
-            createTrackModel(
-            { 
-              name: 'RailwayStation',
-              props: {
-                name: pick.id.split('_')[1],
-              },
-            },
-            {
-              viewer: viewer,
-              coordinate: event.position,
-              autoScale: true,
-              // 距离地面多高显示弹窗
-              distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 1100000),
-              // 距离多高缩放弹窗
-              scaleByDistance: new Cesium.NearFarScalar(0, 1.3, 6000, 0.8),
-              offset: {
-                y: -30,
-              },
-              fly: false,
-              show: 'afterFly',
-              flyOffset: {
-                longitude: -0.011696,
-                latitude: -0.097186,
-                height: 500000,
-              },
-              duration: 0,
-            },
-            {
-              title: '城市',
-            },
-          );
-          }
-          // console.log('鼠标点击事件：', event.position); // 输出鼠标点击
-        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        // let handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);//处理用户输入事件
+        // handler.setInputAction(function (event) {       // 设置左键点击事件
+        //   let pick = viewer.scene.pick(event.position); // 获取 pick 拾取对象
+        //   console.log(pick)
+        //   if (Cesium.defined(pick) && pick.id.indexOf("mark") > -1) {                   // 判断是否获取到了 pick 
+        //     console.log(pick);
+        //     createTrackModel(
+        //     { 
+        //       name: 'RailwayStation',
+        //       props: {
+        //         name: pick.id.split('_')[1],
+        //       },
+        //     },
+        //     {
+        //       viewer: viewer,
+        //       coordinate: event.position,
+        //       autoScale: true,
+        //       // 距离地面多高显示弹窗
+        //       distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 1100000),
+        //       // 距离多高缩放弹窗
+        //       scaleByDistance: new Cesium.NearFarScalar(0, 1.3, 6000, 0.8),
+        //       offset: {
+        //         y: -30,
+        //       },
+        //       fly: false,
+        //       show: 'afterFly',
+        //       flyOffset: {
+        //         longitude: -0.011696,
+        //         latitude: -0.097186,
+        //         height: 500000,
+        //       },
+        //       duration: 0,
+        //     },
+        //     {
+        //       title: '城市',
+        //     },
+        //   );
+        //   }
+        //   // console.log('鼠标点击事件：', event.position); // 输出鼠标点击
+        // }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-        handler.setInputAction(function(movement){
-          // console.log('移动事件：',movement.endPosition); 
-          let pick = viewer.scene.pick(movement.endPosition); // 获取 pick 拾取对象
-          if (Cesium.defined(pick) && typeof pick.id == 'string' && !pick.id.includes('_')) {                   // 判断是否获取到了 pick 
-            primitive.forEach(item => {
-              item.appearance.material.uniforms.color = Cesium.Color.fromCssColorString('#6fe5ec').withAlpha(0.01);
-            })
-            pick.primitive.appearance.material.uniforms.color = Cesium.Color.fromCssColorString('#6fe5ec').withAlpha(0.5);
+        // handler.setInputAction(function(movement){
+        //   // console.log('移动事件：',movement.endPosition); 
+        //   let pick = viewer.scene.pick(movement.endPosition); // 获取 pick 拾取对象
+        //   if (Cesium.defined(pick) && typeof pick.id == 'string' && !pick.id.includes('_')) {                   // 判断是否获取到了 pick 
+        //     primitive.forEach(item => {
+        //       item.appearance.material.uniforms.color = Cesium.Color.fromCssColorString('#6fe5ec').withAlpha(0.01);
+        //     })
+        //     pick.primitive.appearance.material.uniforms.color = Cesium.Color.fromCssColorString('#6fe5ec').withAlpha(0.5);
             
-          }else{
-            // console.log('鼠标移动到多边形外',primitive);
-            // 如果鼠标移动到多边形外，则恢复多边形颜色
-            primitive.forEach(item => {
-              item.appearance.material.uniforms.color = Cesium.Color.fromCssColorString('#6fe5ec').withAlpha(0.01);
-            })
-          }  
-        },Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        //   }else{
+        //     // console.log('鼠标移动到多边形外',primitive);
+        //     // 如果鼠标移动到多边形外，则恢复多边形颜色
+        //     primitive.forEach(item => {
+        //       item.appearance.material.uniforms.color = Cesium.Color.fromCssColorString('#6fe5ec').withAlpha(0.01);
+        //     })
+        //   }  
+        // },Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         // 移除鼠标事件
         // handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
@@ -257,7 +258,36 @@
 
         // 添加点扩散效果（台北市）
         addPoint(viewer, 'point_spread_danger', [121.50,25.03], 25000, 25000)
+        // 绘制雷达效果
+        const radar1 = new Radar(viewer, {
+            longitude: 121.50,//经度
+            latitude: 24.03,//纬度
+            radius: 50000, // 雷达半径 单位米
+            rotationSpeed: 10//速度
+        })
 
+        // 飞线效果，从福州飞往其他福建市区
+        FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[1].properties.center],100000)
+        FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[2].properties.center],100000)
+        FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[3].properties.center],100000)
+        FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[4].properties.center],100000)
+        FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[5].properties.center],100000)
+        FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[6].properties.center],100000)
+        FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[7].properties.center],100000)
+        FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[8].properties.center],100000)
+
+        
+        // 圆形区域分析效果
+        // const analyze = new analyzingVisibilityFn()
+        // analyze.start(viewer)
+        // setTimeout(() => {
+        //   analyze.clearAll(viewer)
+        // }, 20000);
+
+        // 绘制面
+        // draw(viewer, 'Polygon')
+
+        
     }
     onMounted(() => {
         initMap();
