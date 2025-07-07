@@ -67,6 +67,7 @@ export class Roaming {
     this.multiplier = options.speed || 1;
     this.showCylinder = options.showCylinder || true;
     this.isPathShow = Cesium.defined(options.isPathShow) ? options.isPathShow : true;
+    this.isPlay = true
   }
  
   /**
@@ -443,6 +444,7 @@ export class Roaming {
      */
   pauseOrContinue(state) {
     console.log('暂停或继续漫游', state);
+    this.isPlay = state
     if (state) {
       // 继续播放
       if (!this.handler && this.entity) {
@@ -468,17 +470,18 @@ export class Roaming {
   trackModelState(state, backPosition) {
     this.trackModel = state;
     if (!state) {
+
       // 停止监听屏幕绘制事件(停止相机变化)
-      this.handler();
-      this.handler = null;
+      // this.handler();
+      // this.handler = null;
       // 解锁相机视角
       this.viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
       // 如果传入了位置，则回到传入的位置
       if (backPosition && Array.isArray(backPosition)) {
         this.viewer.camera.flyTo({
-          destination: Cesium.Cartesian3.fromDegrees(backPosition[0], backPosition[1], backPosition[2] || 1000000.0), // 设置位置
+          destination: Cesium.Cartesian3.fromDegrees(backPosition[0], backPosition[1], backPosition[2] || 2000000), // 设置位置
           orientation: {
-            heading: Cesium.Math.toRadians(20.0), // 方向
+            heading: Cesium.Math.toRadians(0), // 方向
             pitch: Cesium.Math.toRadians(-90),// 倾斜角度
             roll: 0
           },

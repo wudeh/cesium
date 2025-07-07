@@ -368,6 +368,7 @@ export const initTaiFeng = async (outViewer, track) => {
     }
     await typhoonFlytoPath(viewer, result, typhoonName);
   }
+  return 1;
 };
 // 清除台风效果
 export const clearTaiFeng = () => {

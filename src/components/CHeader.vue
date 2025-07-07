@@ -1,13 +1,14 @@
+<!-- 顶部标题 -->
 <template>
-    <div class="top-bar">福建省监控平台</div>
-    <!-- 文字轮播 -->
-    <div class="text-carousel">
-        <transition-group name="carousel" tag="div" class="carousel-container">
-        <div class="text-carousel-item" :key="currentIndex" v-show="currentIndex === getCurrentItemIndex()">
-            {{ getCurrentItem() }}
-        </div>
-        </transition-group>
-    </div>
+  <header class="header">山东省旅游指标监控平台</header>
+  <!-- 文字轮播 -->
+  <div class="text-carousel">
+    <transition-group name="carousel" tag="div" class="carousel-container">
+      <div class="text-carousel-item" :key="currentIndex" v-show="currentIndex === getCurrentItemIndex()">
+        {{ getCurrentItem() }}
+      </div>
+    </transition-group>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -15,13 +16,23 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 // 轮播数据
 const carouselData = ref([
-  '突发!台风安娜将在4天后来临！',
-  '福建省文化和旅游厅发布《关于促进文化和旅游消费的若干措施》',
-  '厦门市风景区入选"中国最美旅游景区"榜单',
-  '福州市景区推出夜游项目，游客体验度大幅提升',
-  '莆田市终于要挖地铁啦！',
-  '三明市体育馆完成升级改造！最多容纳2万人！',
-  '南平市发生山体滑坡！紧急撤离20万人！'
+  '济宁市微山湖旅游区达到国家5A级旅游景区标准要求，拟确定为国家5A级旅游景区!',
+  '山东省文化和旅游厅发布《关于促进文化和旅游消费的若干措施》',
+  '青岛市崂山风景区入选"中国最美旅游景区"榜单',
+  '烟台市蓬莱阁景区推出夜游项目，游客体验度大幅提升',
+  '威海市刘公岛景区新增海洋文化展览馆',
+  '日照市万平口海滨风景区完成升级改造',
+  '泰安市泰山景区推出智慧旅游服务系统',
+  '临沂市蒙山景区举办"蒙山红叶节"活动',
+  '淄博市周村古商城景区新增非遗文化展示区',
+  '潍坊市青州古城景区推出沉浸式文化体验项目',
+  '东营市黄河口生态旅游区举办观鸟节活动',
+  '滨州市孙子兵法城景区新增军事文化体验项目',
+  '德州市齐河欧乐堡景区推出亲子游主题活动',
+  '聊城市东昌湖景区举办荷花节活动',
+  '菏泽市牡丹园景区新增夜间灯光秀表演',
+  '枣庄市台儿庄古城景区推出运河文化体验游',
+  '济宁市曲阜三孔景区举办传统文化研学活动'
 ])
 
 // 状态管理
@@ -87,49 +98,25 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-@keyframes animationTop {
-    from{
-        top: -100px;
-        opacity: 0;
-    }
-    to{
-        top: 0;
-        opacity: 1;
-    }
-}
-.top-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 11;
-    height: 87px;
-    background: url('@/assets/images/top_bg2.png') no-repeat center center;
-    background-size: 100% 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 40px;
-    font-weight: 800;
-    letter-spacing: 12px;
-    color: rgba(230, 239, 253);
-    animation: animationTop 2s linear forwards;
-}
-
-@keyframes displayText {
-    0%{
-        opacity: 0;
-    }
-    99%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
+.header {
+  position: absolute;
+  margin: 0 12px;
+  top: 12px;
+  width: calc(100% - 24px);
+  height: 87px;
+  background: url('@/assets/images/顶部标题.png') no-repeat center center;
+  background-size: 100% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 12px;
+  color: rgba(230, 239, 253);
 }
 
 .text-carousel {
-  z-index: 11;
+  z-index: 1111;
   position: absolute;
   top: 120px;
   left: 50%;
@@ -145,7 +132,6 @@ onBeforeUnmount(() => {
   overflow: hidden;
   cursor: pointer;
   pointer-events: all;
-  animation: displayText 2s linear forwards;
   &:hover {
     background: linear-gradient(90deg, rgba(218, 163, 88, 0.1), rgba(218, 163, 88, 0.7), rgba(218, 163, 88, 0.1));
   }

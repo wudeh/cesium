@@ -2,7 +2,7 @@ import * as Cesium from "cesium";
 import icon from "../assets/images/building.png";
 import icon2 from "../assets/images/rail.png";
 
-
+// 据说可以高性能实现 10w 个聚合点
 export default function formatClusterPoint(viewer, features) {
     const billboardsCollection = viewer.scene.primitives.add(
         new Cesium.BillboardCollection()
