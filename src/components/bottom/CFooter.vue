@@ -35,7 +35,10 @@
       <div v-if="index == 1" class="control">
         <droneControl />
       </div>
-      
+      <!-- 测距 -->
+       <div v-if="index == 2" class="control">
+        <measure />
+      </div>
     </div>
   </footer>
 </template>
@@ -51,6 +54,7 @@ import up from '@/assets/images/up.png'
 import down from '@/assets/images/down.png'
 import droneControl from './droneControl.vue'
 import weather from './weather.vue'
+import measure from './measure.vue'
 
 const numberData = ref<any>([
   {

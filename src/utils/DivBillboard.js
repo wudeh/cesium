@@ -5,6 +5,7 @@ import { createApp, h } from "vue";
 import analysisDiv from "@/components/Billboard/analysisDiv.vue"
 import borderDiv from "@/components/Billboard/borderDiv.vue"
 import lineDiv from "@/components/Billboard/lineDiv.vue"
+import positionToCood from "./PositonToCood";
 /**
  * 实现自己想要的样式弹框
 
@@ -19,6 +20,7 @@ class DivBillboard {
     show;
     vueComponent;
     enableMouse;
+    windowPosition;
 
     /**
      * 
@@ -28,12 +30,13 @@ class DivBillboard {
      * @param vueComponent vue组件
      * @param enableMouse 是否允许鼠标事件
      */
-    constructor(viewer, position, content, vueComponent, enableMouse) {
+    constructor(viewer, position, content, vueComponent, enableMouse, windowPosition) {
         this.viewer = viewer;
         this.position = position;
         this.content = content;
         this.vueComponent = vueComponent;
         this.enableMouse = enableMouse || false
+        this.windowPosition = windowPosition || null
         this.maxRenderDis =
             Math.round(viewer.camera.positionCartographic.height) * 5;
         this.id = new Date().getTime().toString();
@@ -124,11 +127,11 @@ class DivBillboard {
 /**
  * 
  * @param {*} viewer 
- * @param {*} coordinate 经纬度，高度
+ * @param {*} position 屏幕上的坐标
  * @param {*} type 弹框类型 1，2，3
  * @returns 弹框实例，可以用来销毁 destroy()，或者重新设置内容 setContent()
  */
-const addDiv = (viewer, coordinate, type) => {
+const addDiv = (viewer, position, type) => {
     let component;
     if (type === 1) {
         component = analysisDiv
@@ -137,9 +140,11 @@ const addDiv = (viewer, coordinate, type) => {
     } else if (type === 3) {
         component = lineDiv
     }
+    // 屏幕坐标 转 经纬度
+    const coordinate = positionToCood(viewer, position)
     let pos = Cesium.Cartesian3.fromDegrees(coordinate.longitude, coordinate.latitude, coordinate.height);
     let content = `经度：${coordinate.longitude}\n纬度：${coordinate.latitude}\n高度：${coordinate.height}`
-    return new DivBillboard(viewer, pos, content, component);
+    return new DivBillboard(viewer, pos, content, component, true, position);
     // console.log(billboard)
     // addpoint(coordinate.longitude, coordinate.latitude)
 }

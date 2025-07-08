@@ -1,5 +1,6 @@
 import * as Cesium from 'cesium';
 
+// 屏幕坐标 转 经纬度
 export default function positionToCood(viewer, position) {
     let cartesian = viewer.scene.pickPosition(position);
     // const point = _this.cartesian3ToWGS84(cartesian);

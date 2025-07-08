@@ -21,7 +21,6 @@ const props = defineProps({
 <style scoped>
 .linediv {
     position: relative;
-    padding: 4px;
     color: #ffffff;
     text-transform: uppercase;
     transition: 0.5s;
@@ -29,7 +28,7 @@ const props = defineProps({
     overflow: hidden;
     white-space: break-spaces;
     text-align: left;
-    transform: translateX(50%);
+    transform: translate(47%, 7%);
 
     .content {
         padding-left: 20px;

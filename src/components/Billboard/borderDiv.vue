@@ -49,7 +49,7 @@ const props = defineProps({
     left: 50%;
     margin-top: 5px;
     border: 2px dashed #03e9f4;
-    height: 60px;
+    height: 50px;
     pointer-events: none;
     z-index: auto;
     transform: translateY(-60px);

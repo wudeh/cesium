@@ -170,6 +170,7 @@
           console.log(pick)
           if (Cesium.defined(pick) && typeof pick.id === 'string' && pick.id.indexOf("mark") > -1) {                   // 判断是否获取到了 pick 
             console.log(pick);
+            // 点击每个市中心，弹一个框
             createTrackModel(
             { 
               name: 'RailwayStation',
@@ -201,9 +202,6 @@
               title: '城市',
             },
           );
-          }else{
-            // 点个弹框出来
-            addDiv(viewer, positionToCood(viewer, event.position),2)
           }
           // console.log('鼠标点击事件：', event.position); // 输出鼠标点击
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -283,14 +281,6 @@
         FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[6].properties.center],100000)
         FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[7].properties.center],100000)
         FlyLine(viewer, [(fujianshiJson).features[0].properties.center,(fujianshiJson).features[8].properties.center],100000)
-
-        
-        // 圆形区域分析效果
-        // const analyze = new analyzingVisibilityFn()
-        // analyze.start(viewer)
-        // setTimeout(() => {
-        //   analyze.clearAll(viewer)
-        // }, 20000);
 
         // 绘制面
         // draw(viewer, 'Polygon')
