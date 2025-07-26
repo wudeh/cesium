@@ -10,7 +10,8 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* overflow: hidden; */
+  /* 不 overflow 的话 开始加载的时候会有滚动条 */
+  overflow: hidden;
   #app {
     position: relative;
     width: 100%;

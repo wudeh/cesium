@@ -32,13 +32,13 @@
         <weather />
       </div>
       <!-- 无人机控制 -->
-      <div v-if="index == 1" class="control">
+      <div v-if="index == 1" class="control fly">
         <droneControl />
       </div>
       <!-- 加载 3DTile 模型 -->
-       <!-- <div v-if="index == 1" class="control3D" @click="Tile">
+       <div v-if="index == 1" class="control3D" @click="Tile">
         加载 3DTile 模型
-      </div> -->
+      </div>
       <!-- 测距 -->
        <div v-if="index == 2" class="control">
         <measure />
@@ -133,7 +133,7 @@ const Tile = async () => {
   // 加载香港某城市 3DTile 模型
   if(!tileset){
     // tileset = await Cesium.Cesium3DTileset.fromUrl('https://wudehuablog.netlify.app/tile_20_27_CESIUM/tileset.json')
-    tileset = await Cesium.Cesium3DTileset.fromUrl('/tile_20_27_CESIUM/tileset.json')
+    tileset = await Cesium.Cesium3DTileset.fromUrl('https://wudeh.github.io/tile_20_27_CESIUM/tileset.json')
     window.viewer.scene.primitives.add(tileset); // 将倾斜摄影实体加载到地图上
     window.viewer.zoomTo(tileset)
     // 删除暗面
@@ -264,6 +264,9 @@ onUnmounted(() => {
     top: -24%;
     left: 50%;
     transform: translate(-50%, 0);
+  }
+  .fly{
+    top: -50%;
   }
   .control3D {
     position: absolute;
