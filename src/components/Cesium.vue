@@ -84,7 +84,7 @@
         // 加载卫星轨道数据
         let czmldata = new Cesium.CzmlDataSource.load('./wx.czml');
         viewer.dataSources.add(czmldata)
-        // 设置当前时间
+        // 设置当前时间为卫星时间，不然没有卫星动画
         viewer.clock.currentTime = Cesium.JulianDate.fromDate(new Date('2023-05-10T06:39:23.797780+00:00'));
         // 把cesium的动画开关打开
         viewer.clock.shouldAnimate = true;
@@ -149,7 +149,7 @@
 
               // 添加福建省以外的暗面
               const lightArea = setLightArea(viewer, fujianJson.features[0].geometry.coordinates[0].flat(Infinity));
-              
+              window.lightArea = lightArea
             },
             cancle: function () {
               // 如果取消飞行则会调用此函数
@@ -236,10 +236,6 @@
         // 下雪效果
         // const snow = new SnowEffect(viewer);
 
-        // 加载香港铜锣湾 3d 模型
-        // const tileset = await Cesium.Cesium3DTileset.fromUrl('./tongluowan/tileset.json')
-        // viewer.scene.primitives.add(tileset); // 将倾斜摄影实体加载到地图上
-        // viewer.zoomTo(tileset)
 
         
         // 添加一个模型

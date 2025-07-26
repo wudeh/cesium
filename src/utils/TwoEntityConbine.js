@@ -1,3 +1,4 @@
+// 两点（或两个模型）之间保持连线效果
 let entity = viewer.entities.add({
         availability : new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
           start: Cesium.JulianDate.fromDate(new Date("2023-05-21 08:00:00")),

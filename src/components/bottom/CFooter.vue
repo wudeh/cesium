@@ -32,19 +32,25 @@
         <weather />
       </div>
       <!-- 无人机控制 -->
-      <div v-if="index == 1" class="control">
+      <div v-if="index == 1" class="control fly">
         <droneControl />
+      </div>
+      <!-- 加载 3DTile 模型 -->
+       <div v-if="index == 1" class="control3D" @click="Tile">
+        加载 3DTile 模型
       </div>
       <!-- 测距 -->
        <div v-if="index == 2" class="control">
         <measure />
       </div>
+      
     </div>
   </footer>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
+import * as Cesium from "cesium";
 import Vue3Odometer from 'vue3-odometer'
 import 'odometer/themes/odometer-theme-default.css'
 import icon3 from '@/assets/images/icon3.png'
@@ -55,8 +61,12 @@ import down from '@/assets/images/down.png'
 import droneControl from './droneControl.vue'
 import weather from './weather.vue'
 import measure from './measure.vue'
+import fujianshiJson from '@/assets/json/fujian_shi.json';
+import fujianJson from '@/assets/json/fujian.json';
+import setLightArea from '@/utils/LightArea';
 
-const numberData = ref<any>([
+
+const numberData = ref([
   {
     title: '2022年人均收入',
     value: 12345.6,
@@ -83,20 +93,20 @@ const numberData = ref<any>([
   }
 ])
 
-let intervalId: any = null
+let intervalId = null
 
 // 用于存储上一次的 value 值
-const lastValues = ref<number[]>(numberData.value.map((item: any) => item.value))
+const lastValues = ref(numberData.value.map((item) => item.value))
 
 function randomizeNumberData() {
-  numberData.value = numberData.value.map((item: any, idx: number) => {
+  numberData.value = numberData.value.map((item, idx) => {
     // 生成一个基于当前值的随机浮动（±10%）
     const randomFactor = 1 + (Math.random() - 0.5) * 0.2 // ±10%
     const prevValue = lastValues.value[idx]
     const newValue = +(item.value * randomFactor).toFixed(1)
     // 计算变化百分比
     let proportion = 0
-    let compare: 'up' | 'down' = 'up'
+    let compare = 'up'
     if (prevValue !== 0) {
       proportion = +(((newValue - prevValue) / Math.abs(prevValue)) * 100).toFixed(1)
       compare = proportion >= 0 ? 'up' : 'down'
@@ -113,9 +123,55 @@ function randomizeNumberData() {
   })
 }
 
+// 加载 3DTile 
+let tileset = null
+
+let scene = null;
+
+const Tile = async () => {
+  scene = window.viewer.scene
+  // 加载香港某城市 3DTile 模型
+  if(!tileset){
+    tileset = await Cesium.Cesium3DTileset.fromUrl('https://wudehuablog.netlify.app/tile_20_27_CESIUM/tileset.json')
+    // tileset = await Cesium.Cesium3DTileset.fromUrl('/tile_20_27_CESIUM/tileset.json')
+    window.viewer.scene.primitives.add(tileset); // 将倾斜摄影实体加载到地图上
+    window.viewer.zoomTo(tileset)
+    // 删除暗面
+    window.viewer.entities.remove(window.lightArea)
+    // 把cesium的动画开关关闭
+    window.viewer.clock.shouldAnimate = false;
+
+  }else{
+    // 清除模型
+    window.viewer.scene.primitives.remove(tileset);
+    tileset = null;
+    // 加上暗面
+    window.viewer.entities.add(window.lightArea)
+    // 相机回原位置
+    window.viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees((fujianshiJson).features[0].properties.center[0], (fujianshiJson).features[0].properties.center[1], 2000000), // 设置位置
+      orientation: {
+        heading: Cesium.Math.toRadians(0), // 方向
+        pitch: Cesium.Math.toRadians(-90),// 倾斜角度
+        roll: 0
+      },
+      duration: 5, // 设置飞行持续时间，默认会根据距离来计算
+      complete: async () => {
+        // 到达位置后执行的回调函数
+      },
+      cancle: function () {
+        // 如果取消飞行则会调用此函数
+      },
+      pitchAdjustHeight: -90, // 如果摄像机飞越高于该值，则调整俯仰俯仰的俯仰角度，并将地球保持在视口中。
+      maximumHeight: 5000, // 相机最大飞行高度
+      flyOverLongitude: 100, // 如果到达目的地有2种方式，设置具体值后会强制选择方向飞过这个经度(这个，很好用)
+    });
+  }
+}
+
 onMounted(() => {
   // 初始化lastValues
-  lastValues.value = numberData.value.map((item: any) => item.value)
+  lastValues.value = numberData.value.map((item) => item.value)
   intervalId = window.setInterval(() => {
     randomizeNumberData()
   }, 10000)
@@ -208,6 +264,18 @@ onUnmounted(() => {
     top: -24%;
     left: 50%;
     transform: translate(-50%, 0);
+  }
+  .fly{
+    top: -48%;
+  }
+  .control3D {
+    position: absolute;
+    top: -28%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    white-space: nowrap;
+    font-size: 14px;
+    cursor: pointer;
   }
 }
 </style>
